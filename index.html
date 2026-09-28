@@ -2139,7 +2139,94 @@
   .brand-reset { padding:12px; border-radius:9px; border:1.5px solid var(--line); background:var(--panel); font-weight:700; cursor:pointer; }
   /* Pitch version: Google Calendar import hidden (its sign-in screen belongs to another account) */
   #hubGcalBar { display: none !important; }
+
+  /* =================== Professional theme =================== */
+  body, button, input, select, textarea { font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; }
+  :root { --paper: #f4f5f7; --line: #e2e5ea; --muted: #6b7280; --radius: 6px; }
+  body { color: #1f2937; -webkit-font-smoothing: antialiased; }
+  .ic { width: 16px; height: 16px; flex: 0 0 auto; }
+  /* top bars */
+  .topbar { padding: 14px 20px; box-shadow: none; }
+  .topbar .title { font-size: 15px; font-weight: 600; letter-spacing: 0; }
+  .brand-title span[data-raw]:not(:empty)::after { content: '·'; margin: 0 8px; opacity: .5; }
+  .overall-track { height: 4px; border-radius: 2px; }
+  .brand-open-btn { display: inline-flex; align-items: center; gap: 6px; border-radius: 6px !important; font-weight: 500 !important;
+    border: 1px solid rgba(255,255,255,.22) !important; background: transparent !important; font-size: 13px !important; }
+  .fp-topbar { padding: 10px 12px; }
+  .fp-topbar button, .fp-topbar-upload-btn { border-radius: 6px !important; font-weight: 500 !important; font-size: 13px !important;
+    padding: 7px 11px !important; border: 1px solid rgba(255,255,255,.2) !important; background: transparent !important; gap: 6px; }
+  .fp-topbar button:hover { background: rgba(255,255,255,.08) !important; }
+  #fpUploadBtn { background: var(--accent) !important; border-color: var(--accent) !important; }
+  /* drawing bar */
+  .fp-drawbar { background: #fff; border-bottom: 1px solid var(--line); padding: 8px 12px; gap: 10px; }
+  .fp-mode-btn { display: inline-flex; align-items: center; gap: 6px; border-radius: 6px; font-weight: 500; font-size: 13px;
+    border: 1px solid var(--line); background: #fff; color: #374151; padding: 7px 12px; }
+  .fp-mode-btn[data-active="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .fp-tool-btn { width: 34px; height: 34px; border-radius: 6px; border: 1px solid var(--line); background: #fff; color: #374151; }
+  .fp-tool-btn[data-active="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .fp-color-btn { width: 24px; height: 24px; border-width: 2px; }
+  .fp-opacity { color: var(--muted); }
+  .fp-poly-bar { background: var(--accent-soft); color: var(--accent); border-bottom: 1px solid var(--line); font-weight: 500; }
+  .fp-poly-bar button { border-radius: 6px; border-color: var(--accent); color: var(--accent); font-weight: 600; }
+  #fpPolyDone { background: var(--accent); color: #fff; }
+  /* sticker tray */
+  .fp-tray { background: #fff; }
+  .fp-tray-btn { border: 1px solid var(--line) !important; border-radius: 6px !important; background: #fff !important;
+    font-weight: 500 !important; color: #374151 !important; }
+  .fp-tray-btn.fp-placing { border-color: var(--accent) !important; background: var(--accent-soft) !important; color: var(--accent) !important; box-shadow: none; }
+  .fp-zoom-controls { border-radius: 8px; box-shadow: 0 1px 3px rgba(16,24,40,.12); }
+  .fp-zoom-controls button { border-radius: 6px; }
+  .fp-rotate-handle, .fp-delete-handle { width: 30px; height: 30px; }
+  .fp-rotate-handle .ic, .fp-delete-handle .ic { width: 15px; height: 15px; }
+  .fp-bg-label { border-radius: 4px; font-weight: 600; letter-spacing: .02em; }
+  /* dashboard cards */
+  .hub-step-block { background: #fff; border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 1px 2px rgba(16,24,40,.04); }
+  .hub-step-label { background: #fff !important; color: #111827 !important; font-size: 15px !important; font-weight: 600 !important;
+    padding: 14px 16px !important; border-bottom: 1px solid var(--line); letter-spacing: 0 !important; }
+  .step-num { color: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin-right: 10px; }
+  .hub-gcal-btn, .hub-schedule-item { border-radius: 6px; }
+  .hub-schedule-add input { border-radius: 6px; border: 1px solid var(--line); background: #fff; }
+  .hub-schedule-add button, .hub-sched-select { border-radius: 6px; font-weight: 600; }
+  .hub-mode-btn { text-align: left; border: 1px solid var(--line) !important; border-radius: 6px; background: #fff; padding: 16px; transition: border-color .15s, box-shadow .15s; }
+  .hub-mode-btn:hover, .hub-mode-btn.active { border-color: var(--accent) !important; box-shadow: 0 0 0 3px var(--accent-soft); background: #fff !important; }
+  .hub-mode-btn.active .hub-mode-title, .hub-mode-btn:hover .hub-mode-title { color: #111827 !important; }
+  .hub-mode-btn.active .hub-mode-sub, .hub-mode-btn:hover .hub-mode-sub { color: var(--muted) !important; }
+  .hub-mode-icon { width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center;
+    background: var(--accent-soft); color: var(--accent); margin-bottom: 10px; }
+  .hub-mode-icon .ic { width: 20px; height: 20px; }
+  .hub-mode-title { font-size: 14px; font-weight: 600; }
+  .hub-mode-sub { font-size: 12px; line-height: 1.5; }
+  .hub-card { border-radius: 6px; border: 1px solid var(--line); }
+  .hub-title { font-weight: 600; }
+  .hub-head .h1 { font-weight: 600; font-size: 18px; }
+  .finish-banner { border-radius: 6px; }
+  .finish-cta button, .btn, .copy-btn, .qm-confirm, .qm-cancel, .restart-btn, .back-to-hub-btn, .note-confirm-btn, .brand-reset { border-radius: 6px !important; font-weight: 600 !important; }
+  /* questions & forms */
+  .qcard { border-radius: 6px; border: 1px solid var(--line); box-shadow: 0 1px 2px rgba(16,24,40,.03); }
+  .qcard .qtext { font-weight: 600; font-size: 15px; }
+  .opt { border-radius: 6px; font-weight: 500; font-size: 14px; border: 1px solid var(--line); background: #fff; }
+  .jump-chip { border-radius: 4px; }
+  .quick-modal .qm-label, .brand-card .qm-label { font-size: 11px !important; letter-spacing: .08em !important; }
+  .qm-opt, .qm-fee-check, .qm-fee-row, .qm-stepper { border-radius: 6px !important; }
+  .qm-opt { font-weight: 600; border: 1px solid var(--line) !important; background: #fff !important; }
+  .qm-opt.selected { background: var(--accent) !important; border-color: var(--accent) !important; }
+  .quick-modal h2 { font-weight: 600; color: #111827; }
+  .quick-modal input, .quick-modal textarea { border-radius: 6px !important; border: 1px solid var(--line) !important; background: #fff !important; }
+  /* results */
+  .wechat-box { border-radius: 6px; border: 1px solid var(--line); }
+  .wechat-head h3 { color: #111827; font-weight: 600; }
+  .lang-toggle { display: none !important; }                  /* reports are English only */
+  .wechat-textarea { font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: 13px; border-radius: 6px; }
+  .warn-summary, .fee-summary, .ok-banner { border-radius: 6px; }
+  /* brand page */
+  .brand-card { border-radius: 6px; }
+  .brand-upload, .brand-small-btn { border-radius: 6px; font-weight: 600; }
+  .brand-presets { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .brand-preset { display: inline-flex; align-items: center; gap: 4px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 6px; background: #fff; font-size: 12px; font-weight: 600; color: #374151; cursor: pointer; }
+  .brand-preset span { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+  .brand-preset span + span { margin-right: 4px; }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 <!-- Today's Schedule (Google Calendar) Modal -->
@@ -2167,14 +2254,14 @@
     <div class="qm-label">地址 Address</div>
     <input type="text" id="qmAddress" placeholder="輸入地址..." style="width:100%;border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14px;margin-bottom:14px;background:var(--paper);">
 
-    <div class="qm-label">銷售備註 Sales Notes <span style="font-weight:400;opacity:0.6">（選填）</span></div>
-    <textarea id="qmSalesNote" placeholder="銷售注意事項..." rows="2" style="width:100%;border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:10px;background:var(--paper);resize:vertical;font-family:inherit;"></textarea>
+    <div class="qm-label">銷售備註 Sales Notes <span style="font-weight:400;opacity:0.6">(optional)</span></div>
+    <textarea id="qmSalesNote" placeholder="Sales notes..." rows="2" style="width:100%;border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:10px;background:var(--paper);resize:vertical;font-family:inherit;"></textarea>
 
-    <div class="qm-label">安裝備註 Install Notes <span style="font-weight:400;opacity:0.6">（選填）</span></div>
-    <textarea id="qmInstallNote" placeholder="安裝注意事項..." rows="2" style="width:100%;border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:10px;background:var(--paper);resize:vertical;font-family:inherit;"></textarea>
+    <div class="qm-label">安裝備註 Install Notes <span style="font-weight:400;opacity:0.6">(optional)</span></div>
+    <textarea id="qmInstallNote" placeholder="Installation notes..." rows="2" style="width:100%;border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:10px;background:var(--paper);resize:vertical;font-family:inherit;"></textarea>
 
-    <div class="qm-label">其他備註 Other Notes <span style="font-weight:400;opacity:0.6">（選填）</span></div>
-    <textarea id="qmOtherNote" placeholder="其他注意事項..." rows="2" style="width:100%;border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:14px;background:var(--paper);resize:vertical;font-family:inherit;"></textarea>
+    <div class="qm-label">其他備註 Other Notes <span style="font-weight:400;opacity:0.6">(optional)</span></div>
+    <textarea id="qmOtherNote" placeholder="Other notes..." rows="2" style="width:100%;border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:14px;background:var(--paper);resize:vertical;font-family:inherit;"></textarea>
 
     <div class="qm-label">一拖幾 Number of units</div>
     <div class="qm-options" id="qmCountOpts">
@@ -2194,7 +2281,7 @@
       <div class="qm-options qm-combo-opts" id="qmComboOpts" style="flex-direction:column; gap:8px;"></div>
     </div>
 
-    <div class="qm-label">附加費用 Extra Fees <span style="font-weight:400;opacity:0.6">（選填）</span></div>
+    <div class="qm-label">附加費用 Extra Fees <span style="font-weight:400;opacity:0.6">(optional)</span></div>
 
     <div class="qm-fee-section">
       <!-- Checkbox fees (fixed ×1) -->
@@ -2272,11 +2359,11 @@
   <div class="fp-pane" id="fpPane">
     <div class="fp-topbar">
       <div class="fp-actions">
-        <button id="fpUploadBtn">📷 上傳底圖</button>
-        <button id="fpExportBtn">💾 儲存平面圖</button>
-        <button id="fpFullscreenBtn" title="全螢幕">⛶</button>
-        <button id="fpClearBtn">清空</button>
-        <button class="fp-collapse-btn" id="fpCollapseBtn">收合 ‹</button>
+        <button id="fpUploadBtn"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Upload Plan</button>
+        <button id="fpExportBtn"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Save Plan</button>
+        <button id="fpFullscreenBtn" title="Fullscreen"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+        <button id="fpClearBtn"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Clear</button>
+        <button class="fp-collapse-btn" id="fpCollapseBtn">Collapse</button>
       </div>
     </div>
 
@@ -2288,12 +2375,12 @@
           <button id="fpFloorSingle">
             <div style="font-size:24px;margin-bottom:6px;">🏠</div>
             <div style="font-weight:800;font-size:15px;">單層 Single</div>
-            <div style="font-size:12px;opacity:0.7;margin-top:3px;">上傳一張平面圖</div>
+            <div style="font-size:12px;opacity:0.7;margin-top:3px;">One floor plan</div>
           </button>
           <button id="fpFloorDouble">
             <div style="font-size:24px;margin-bottom:6px;">🏢</div>
             <div style="font-weight:800;font-size:15px;">雙層 Double</div>
-            <div style="font-size:12px;opacity:0.7;margin-top:3px;">上傳樓下＋樓上</div>
+            <div style="font-size:12px;opacity:0.7;margin-top:3px;">Ground + first floor</div>
           </button>
         </div>
         <button class="fp-floor-modal-cancel" id="fpFloorModalCancel">取消 Cancel</button>
@@ -2306,12 +2393,12 @@
         <div class="fp-floor-modal-title">上傳雙層底圖 Upload Both Floors</div>
         <label class="fp-double-upload-btn">
           📷 樓下 Ground Floor
-          <span id="fpGroundStatus" class="fp-upload-status">未上傳</span>
+          <span id="fpGroundStatus" class="fp-upload-status">Not uploaded</span>
           <input type="file" accept="image/*" id="fpBgUpload" style="display:none">
         </label>
         <label class="fp-double-upload-btn" style="margin-top:8px;">
           📷 樓上 First Floor (Upstairs)
-          <span id="fpUpperStatus" class="fp-upload-status">未上傳</span>
+          <span id="fpUpperStatus" class="fp-upload-status">Not uploaded</span>
           <input type="file" accept="image/*" id="fpBgUpload2" style="display:none">
         </label>
         <button class="fp-floor-modal-cancel" id="fpDoubleUploadDone" style="margin-top:12px;background:var(--green);color:#fff;border:none;">完成 Done</button>
@@ -2322,28 +2409,28 @@
     <!-- Hidden single upload input -->
     <input type="file" accept="image/*" id="fpBgUploadSingle" style="display:none">
     <div class="fp-drawbar" id="fpDrawbar">
-      <button class="fp-mode-btn" id="fpModeMove" data-active="true">✋ 移動 Move</button>
-      <button class="fp-mode-btn" id="fpModeDraw">✏️ 畫筆 Draw</button>
+      <button class="fp-mode-btn" id="fpModeMove" data-active="true"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v6M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>Move</button>
+      <button class="fp-mode-btn" id="fpModeDraw"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Draw</button>
       <div class="fp-drawbar-tools" id="fpDrawTools" style="display:none;">
         <button class="fp-color-btn" data-color="#1e3a6e" style="background:#1e3a6e" title="深藍 Dark Blue"></button>
         <button class="fp-color-btn" data-color="#d63b2f" style="background:#d63b2f" title="紅 Red"></button>
         <button class="fp-color-btn" data-color="#e8941a" style="background:#e8941a" title="橘黃 Orange"></button>
-        <button class="fp-tool-btn" id="fpPenBtn" title="手繪 Pen">✏️</button>
-        <button class="fp-tool-btn" id="fpPolyBtn" title="描外框 Outline（點角落）">⬠</button>
-        <button class="fp-tool-btn" id="fpTextBtn" title="文字標註 Text">T</button>
-        <button class="fp-tool-btn" id="fpLineBtn" title="直線 Line">╱</button>
-        <button class="fp-tool-btn" id="fpRectBtn" title="方形 Rectangle">▭</button>
-        <button class="fp-tool-btn" id="fpEraserBtn" title="橡皮擦 Eraser">🧹</button>
-        <button class="fp-tool-btn" id="fpUndoBtn" title="撤銷 Undo">↩</button>
+        <button class="fp-tool-btn" id="fpPenBtn" title="Pen"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+        <button class="fp-tool-btn" id="fpPolyBtn" title="Trace outline"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 9 18 21 6 21 2 9"/></svg></button>
+        <button class="fp-tool-btn" id="fpTextBtn" title="Text"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></button>
+        <button class="fp-tool-btn" id="fpLineBtn" title="Line"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="19" x2="19" y2="5"/></svg></button>
+        <button class="fp-tool-btn" id="fpRectBtn" title="Rectangle"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="1"/></svg></button>
+        <button class="fp-tool-btn" id="fpEraserBtn" title="Eraser"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4.3-4.3a1 1 0 0 1 0-1.4l10-10a1 1 0 0 1 1.4 0l5.6 5.6a1 1 0 0 1 0 1.4L13 19"/><path d="M22 21H7"/><path d="m5 11 9 9"/></svg></button>
+        <button class="fp-tool-btn" id="fpUndoBtn" title="Undo"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg></button>
       </div>
-      <label class="fp-opacity" title="底圖深淺 Background opacity">🖼
+      <label class="fp-opacity" title="Background opacity"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg>
         <input type="range" id="fpBgOpacity" min="10" max="100" value="100">
       </label>
     </div>
     <div class="fp-poly-bar" id="fpPolyBar" style="display:none;">
-      <span id="fpPolyHint">點屋頂的每個角落，點回第一個點完成 Tap each roof corner, tap the first point to finish</span>
-      <button id="fpPolyDone">✓ 完成</button>
-      <button id="fpPolyCancel">✕ 取消</button>
+      <span id="fpPolyHint">Tap each roof corner. Tap the first point to close the outline.</span>
+      <button id="fpPolyDone">Done</button>
+      <button id="fpPolyCancel">Cancel</button>
     </div>
     <div class="fp-body">
       <div class="fp-canvas-wrap" id="fpCanvasWrap">
@@ -2398,11 +2485,11 @@
           </div>
           <div class="fp-tray-btn" id="fpAddRemove">
             <svg viewBox="0 0 60 60"><use href="#icon-remove"/></svg>
-            Gas Heater拆除
+            Gas Heater Removal
           </div>
           <div class="fp-tray-btn" id="fpAddReplace">
             <svg viewBox="0 0 60 60"><use href="#icon-replace"/></svg>
-            換內機
+            Replace Indoor
           </div>
           <div class="fp-tray-btn" id="fpAddPump">
             <svg viewBox="0 0 60 60"><use href="#icon-pump"/></svg>
@@ -2930,7 +3017,7 @@ let state = {
   wechatSummary: null, // editable text summary, generated lazily on first results view
   noteLists: {},       // questionId -> array of {category, text, photos:[dataURL]} confirmed entries
   noteDrafts: {},      // questionId -> {category, text} currently-being-typed entry (not yet confirmed)
-  summaryLang: 'zh',   // 'zh' | 'en' — which language the WeChat summary report is shown in
+  summaryLang: 'en',   // 'zh' | 'en' — which language the WeChat summary report is shown in
   manualFees: [],      // array of manually-added fee text strings
   manualFeeDraft: '',  // text currently being typed into the "add fee" input
 };
@@ -3241,7 +3328,14 @@ function buildWeChatSummary(lang) {
 /* =======================================================================
    品牌設定 Brand — logo, company name, colours (saved on this device)
 ========================================================================= */
-const BRAND_DEFAULT = { name: '', logo: null, primary: '#1a46a0', secondary: '#3a8c3f' };
+const BRAND_DEFAULT = { name: '', logo: null, primary: '#1f5fbf', secondary: '#0f9d6b' };
+const BRAND_PRESETS = [
+  { name: 'Ocean',    p: '#1f5fbf', s: '#0f9d6b' },
+  { name: 'Forest',   p: '#1f6f4a', s: '#d97706' },
+  { name: 'Teal',     p: '#0f766e', s: '#2563eb' },
+  { name: 'Burgundy', p: '#8b1e3f', s: '#475569' },
+  { name: 'Graphite', p: '#374151', s: '#ea580c' },
+];
 let BRAND = Object.assign({}, BRAND_DEFAULT);
 try { Object.assign(BRAND, JSON.parse(localStorage.getItem('si_brand') || '{}')); } catch (e) {}
 
@@ -3264,7 +3358,7 @@ function applyBrand() {
   root.setProperty('--accent-dark', hsl(h, s, l - 14));
   root.setProperty('--accent-mid', hsl(h, s, l + 10));
   root.setProperty('--accent-soft', hsl(h, Math.min(s, 70), 94));
-  root.setProperty('--ink', hsl(h, Math.min(s, 55), 14));
+  root.setProperty('--ink', hsl(h, Math.min(s, 28), 17));
   root.setProperty('--green', BRAND.secondary);
   root.setProperty('--green-mid', hsl(h2, s2, l2 + 10));
   root.setProperty('--green-soft', hsl(h2, Math.min(s2, 60), 94));
@@ -3278,7 +3372,7 @@ function saveBrand() {
 function brandHeaderHtml() {
   const logo = BRAND.logo ? `<img class="brand-logo" src="${BRAND.logo}" alt="">` : '';
   const name = BRAND.name ? escapeHtml(BRAND.name) + ' · ' : '';
-  return `${logo}<span>${name}現場評估 Site Inspection</span>`;
+  return `${logo}<span data-raw>${name}</span><span>Site Inspection</span>`;
 }
 
 /* Pick a primary + secondary colour from the logo's own colours */
@@ -3321,11 +3415,15 @@ function renderBrand() {
         <input type="text" id="brandName" value="${escapeHtml(BRAND.name)}" placeholder="例如 ABC Air Conditioning">
         <div class="qm-label" style="margin-top:14px">Logo</div>
         <div class="brand-logo-row">
-          <div class="brand-logo-box">${BRAND.logo ? `<img src="${BRAND.logo}" alt="">` : '<span>尚未上傳 No logo</span>'}</div>
+          <div class="brand-logo-box">${BRAND.logo ? `<img src="${BRAND.logo}" alt="">` : '<span>No logo</span>'}</div>
           <label class="brand-upload">📷 上傳 Logo<input type="file" accept="image/*" id="brandLogoInput" style="display:none"></label>
           ${BRAND.logo ? '<button class="brand-small-btn" id="brandLogoRemove">移除 Remove</button>' : ''}
         </div>
         <div class="brand-hint">上傳 Logo 後會自動依 Logo 取色，也可以自己調整。 Colours are picked from the logo automatically — adjust below if needed.</div>
+        <div class="qm-label" style="margin-top:6px">Theme presets</div>
+        <div class="brand-presets">
+          ${BRAND_PRESETS.map(t => `<button class="brand-preset" data-p="${t.p}" data-s="${t.s}" title="${t.name}"><span style="background:${t.p}"></span><span style="background:${t.s}"></span>${t.name}</button>`).join('')}
+        </div>
         <div class="brand-colors">
           <label>主色 Primary<input type="color" id="brandPrimary" value="${BRAND.primary}"></label>
           <label>輔色 Secondary<input type="color" id="brandSecondary" value="${BRAND.secondary}"></label>
@@ -3346,6 +3444,9 @@ function renderBrand() {
     </div>`;
 }
 function attachBrandEvents() {
+  document.querySelectorAll('.brand-preset').forEach(b => b.addEventListener('click', () => {
+    BRAND.primary = b.dataset.p; BRAND.secondary = b.dataset.s; saveBrand(); render();
+  }));
   const back = () => { state.view = 'hub'; render(); };
   document.getElementById('brandBack').addEventListener('click', back);
   document.getElementById('brandName').addEventListener('input', e => {
@@ -3386,6 +3487,61 @@ function attachBrandEvents() {
   });
 }
 applyBrand();
+
+
+/* =======================================================================
+   English-only display: every label in this app is written "中文 English".
+   This shows only the English part. User-typed content (names, addresses,
+   notes, manual fees) is marked data-raw / skipped and never changed.
+========================================================================= */
+const EN_IDEO = /[\u3400-\u9FFF\uF900-\uFAFF]/;                       // Chinese characters
+const EN_CJK  = /[\u3000-\u303F\u3400-\u9FFF\uF900-\uFAFF\uFF00-\uFFEF]/;  // + CJK punctuation
+const EN_EMOJI = /(?![\u2713\u2715\u2714\u2715\u2192\u2190])[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}]\uFE0F?/gu;
+function toEnglish(s) {
+  if (!EN_IDEO.test(s)) return s;
+  const lead = /^\s/.test(s) ? ' ' : '', trail = /\s$/.test(s) ? ' ' : '';
+  let out;
+  if (s.includes(' / ') && /[A-Za-z]/.test(s.split(' / ').slice(1).join(''))) {
+    out = s.split(' / ').slice(1).join(' / ');                    // "中文 ×1 / English ×1"
+  } else {
+    let last = -1;
+    for (let i = s.length - 1; i >= 0; i--) if (EN_CJK.test(s[i])) { last = i; break; }
+    out = s.slice(last + 1)
+      .replace(/^\s*[×x]\s*\d+\s+(?=[A-Za-z])/, '')              // "拉管費 ×2 Pipe fee ×2"
+      .replace(/^[\s,.:;)\]]+/, '');
+    if (!/[A-Za-z]/.test(out)) out = s.replace(new RegExp(EN_CJK.source, 'g'), ' ');  // e.g. "Gas Heater拆除"
+  }
+  out = out.replace(EN_EMOJI, '').replace(/\s{2,}/g, ' ').trim();
+  return out ? lead + out + trail : s;
+}
+const EN_SKIP = '[data-raw], .note-entry-text, .hub-schedule-name, .hub-schedule-addr, .fee-row-manual .fee-row-text, .res-header .big, .res-header .section-sub, textarea, script, style';
+function englishify(root) {
+  if (!root) return;
+  if (root.nodeType === 3) {                                       // text node
+    const p = root.parentElement;
+    if (p && !p.closest(EN_SKIP)) { const t = toEnglish(root.nodeValue); if (t !== root.nodeValue) root.nodeValue = t; }
+    return;
+  }
+  if (root.nodeType !== 1 || root.closest(EN_SKIP)) return;
+  ['placeholder', 'title'].forEach(a => { if (root.hasAttribute && root.hasAttribute(a)) root.setAttribute(a, toEnglish(root.getAttribute(a))); });
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+  let n; while ((n = w.nextNode())) {
+    if (n.nodeType === 1) {
+      if (n.closest('[data-raw]')) continue;
+      ['placeholder', 'title'].forEach(a => { if (n.hasAttribute(a)) { const v = n.getAttribute(a), t = toEnglish(v); if (t !== v) n.setAttribute(a, t); } });
+    } else {
+      const p = n.parentElement;
+      if (p && !p.closest(EN_SKIP)) { const t = toEnglish(n.nodeValue); if (t !== n.nodeValue) n.nodeValue = t; }
+    }
+  }
+}
+new MutationObserver(ms => ms.forEach(m => {
+  if (m.type === 'characterData') englishify(m.target);
+  m.addedNodes && m.addedNodes.forEach(englishify);
+})).observe(document.body, { childList: true, subtree: true, characterData: true });
+englishify(document.body);
+const _alert = window.alert.bind(window);
+window.alert = msg => _alert(toEnglish(String(msg)).replace(/\\n/g, '\n'));
 
 /* ---------------- render: router ---------------- */
 
@@ -3485,7 +3641,7 @@ function renderHub() {
     <div class="topbar">
       <div class="row">
         <div class="title brand-title">${brandHeaderHtml()}</div>
-        <button class="brand-open-btn" id="brandOpenBtn">🎨 品牌 Brand</button>
+        <button class="brand-open-btn" id="brandOpenBtn"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="1"/><circle cx="17.5" cy="10.5" r="1"/><circle cx="8.5" cy="7.5" r="1"/><circle cx="6.5" cy="12.5" r="1"/><path d="M12 2a10 10 0 0 0 0 20c.9 0 1.7-.7 1.7-1.7 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.8-1.7 1.7-1.7H16a6 6 0 0 0 6-6c0-4.9-4.5-8.4-10-8.4Z"/></svg>Brand</button>
       </div>
       <div class="overall">
         <div class="overall-track"><div class="overall-fill" style="width:${overall}%"></div></div>
@@ -3495,7 +3651,7 @@ function renderHub() {
 
     <!-- Step 1: Today's Schedule -->
     <div class="hub-step-block">
-      <div class="hub-step-label">Step 1 　今日行程 Today's Schedule</div>
+      <div class="hub-step-label"><span class="step-num">Step 1</span>Today's Schedule</div>
       <div class="hub-gcal-bar" id="hubGcalBar">
         <button class="hub-gcal-btn" id="gcalLoginBtn">
           <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.29-8.16 2.29-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -3503,7 +3659,7 @@ function renderHub() {
         </button>
         <div class="hub-gcal-user" id="gcalUserInfo" style="display:none">
           <span id="gcalUserName"></span>
-          <button class="hub-gcal-logout" id="gcalLogoutBtn">登出</button>
+          <button class="hub-gcal-logout" id="gcalLogoutBtn">Sign out</button>
         </div>
       </div>
       <div class="hub-schedule" id="hubSchedule">
@@ -3518,17 +3674,17 @@ function renderHub() {
 
     <!-- Step 2: Choose Mode -->
     <div class="hub-step-block">
-      <div class="hub-step-label">Step 2 　選擇評估模式 Choose Mode</div>
+      <div class="hub-step-label"><span class="step-num">Step 2</span>Start an Inspection</div>
       <div class="hub-mode-btns">
         <button class="hub-mode-btn hub-mode-quick" id="quickModeBtn">
-          <div class="hub-mode-icon">⚡</div>
+          <div class="hub-mode-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
           <div class="hub-mode-title">快速模式 Quick Mode</div>
-          <div class="hub-mode-sub">只填一拖幾，直接產生報告<br>Select units only, skip to report</div>
+          <div class="hub-mode-sub">Unit count, key fees and notes. Report in under a minute.</div>
         </button>
         <button class="hub-mode-btn hub-mode-standard" id="standardModeBtn">
-          <div class="hub-mode-icon">📋</div>
+          <div class="hub-mode-icon"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M9 12h6M9 16h6"/></svg></div>
           <div class="hub-mode-title">標準模式 Standard Mode</div>
-          <div class="hub-mode-sub">完整填寫7個評估區塊<br>Full 7-section assessment</div>
+          <div class="hub-mode-sub">Full 7-section site assessment with automatic fee calculation.</div>
         </button>
       </div>
     </div>
@@ -3893,7 +4049,7 @@ function renderQuestion(q) {
       <div class="note-entry">
         <span class="note-entry-remove" data-removenote="${q.id}" data-idx="${i}">移除 Remove ×</span>
         <div class="note-entry-tag ${tagClass[e.category]}">${tagLabel[e.category]}</div>
-        <div class="note-entry-text">${e.text}</div>
+        <div class="note-entry-text" data-raw>${e.text}</div>
         ${e.photos && e.photos.length > 0 ? `<div class="photo-thumbs" style="margin-top:8px;">${e.photos.map(src => `<div class="photo-thumb"><img src="${src}"></div>`).join('')}</div>` : ''}
       </div>`).join('');
 
@@ -4010,7 +4166,7 @@ function renderQuestion(q) {
     }
     return `
       <div class="qcard">
-        <div class="qtext">${q.text}（一拖${dependsVal}）</div>
+        <div class="qtext">${q.text} (${dependsVal} indoor units)</div>
         ${q.hint ? `<div class="qhint">${q.hint}</div>` : ''}
         <div class="combo-list">${comboHtml}</div>
         ${customInput}
@@ -4257,12 +4413,12 @@ function attachSectionEvents() {
 function renderResults() {
   const warnings = collectWarnings();
   const fees = collectFees();
-  const name = state.answers['customer_name'] || '（未填 Not filled）';
-  const addr = state.answers['address'] || '（未填 Not filled）';
+  const name = state.answers['customer_name'] || 'Not filled';
+  const addr = state.answers['address'] || 'Not filled';
   const overall = overallCompletion();
 
   if (state.wechatSummary === undefined || state.wechatSummary === null) {
-    state.summaryLang = state.summaryLang || 'zh';
+    state.summaryLang = state.summaryLang || 'en';
     state.wechatSummary = buildWeChatSummary(state.summaryLang);
   }
 
@@ -4278,7 +4434,7 @@ function renderResults() {
     ? `<div class="finish-banner" style="margin:0 0 14px;">⚠ 目前整體完成度 ${overall}%，部分區塊尚未填完，以下僅為目前已填內容 Currently ${overall}% complete, some sections unfinished — showing filled content only</div>`
     : '';
 
-  const langIsZh = (state.summaryLang || 'zh') === 'zh';
+  const langIsZh = (state.summaryLang || 'en') === 'zh';
   let wechatBlock = `
     <div class="wechat-box">
       <div class="wechat-head">
@@ -4301,13 +4457,13 @@ function renderResults() {
       if (q.type === 'text' || q.type === 'date') {
         const val = state.answers[q.id];
         if (!val) return '';
-        return `<div class="res-row"><div class="k">${q.label}</div><div class="v">${val}</div></div>`;
+        return `<div class="res-row"><div class="k">${q.label}</div><div class="v" data-raw>${val}</div></div>`;
       }
       if (q.type === 'note_list') {
         const entries = state.noteLists[q.id] || [];
         if (entries.length === 0) return '';
         const tagLabel = { sales: '銷售 Sales', install: '安裝 Install', other: '其他 Other' };
-        const itemsHtml = entries.map(e => `<div class="res-row"><div class="k">[${tagLabel[e.category]}]</div><div class="v">${e.text}</div></div>`).join('');
+        const itemsHtml = entries.map(e => `<div class="res-row"><div class="k">[${tagLabel[e.category]}]</div><div class="v" data-raw>${e.text}</div></div>`).join('');
         return itemsHtml;
       }
       if (q.type === 'fee_summary') {
@@ -4384,7 +4540,7 @@ function renderResults() {
 
 function attachResultEvents() {
   document.getElementById('restartBtn').addEventListener('click', () => {
-    state = { view: "hub", currentSection: null, answers: {}, follow: {}, counts: {}, dropdowns: {}, hpCustom: {}, photos: {}, wechatSummary: null, noteLists: {}, noteDrafts: {}, summaryLang: 'zh', manualFees: [], manualFeeDraft: '' };
+    state = { view: "hub", currentSection: null, answers: {}, follow: {}, counts: {}, dropdowns: {}, hpCustom: {}, photos: {}, wechatSummary: null, noteLists: {}, noteDrafts: {}, summaryLang: 'en', manualFees: [], manualFeeDraft: '' };
     render();
   });
   document.getElementById('backToHubBtn').addEventListener('click', () => { state.view = "hub"; render(); });
@@ -4398,14 +4554,14 @@ function attachResultEvents() {
   if (regenBtn) {
     regenBtn.addEventListener('click', () => {
       state.summaryCache = {};
-      state.wechatSummary = buildWeChatSummary(state.summaryLang || 'zh');
+      state.wechatSummary = buildWeChatSummary(state.summaryLang || 'en');
       render();
     });
   }
   document.querySelectorAll('.lang-toggle-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
       const lang = btn.getAttribute('data-lang');
-      const from = state.summaryLang || 'zh';
+      const from = state.summaryLang || 'en';
       if (lang === from) return;
       const ta = document.getElementById('wechatSummaryText');
       const current = ta ? ta.value : (state.wechatSummary || '');
@@ -4505,7 +4661,7 @@ function fpGetOrientation() {
 function fpRenderCanvas() {
   const emptyState = (fpBgImageSrc || fpBgImageSrc2) ? '' : `
     <div class="fp-canvas-empty" id="fpEmptyState">
-      <div>📷 上傳底圖開始標註<br>Upload floor plan to start</div>
+      <div>Upload a floor plan to start</div>
       <button id="fpEmptyUploadBtn">上傳底圖 Upload</button>
     </div>`;
 
@@ -4550,11 +4706,11 @@ function fpRenderCanvas() {
             <button data-fproomminus="${s.id}">－</button>
             <button data-fproomplus="${s.id}">＋</button>
           </div>
-          <div class="fp-delete-handle" data-fpdelete="${s.id}">🗑</div>`;
+          <div class="fp-delete-handle" data-fpdelete="${s.id}"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>`;
       } else {
         controls = `
-          <div class="fp-rotate-handle" data-fprotatehandle="${s.id}">↻</div>
-          <div class="fp-delete-handle" data-fpdelete="${s.id}">🗑</div>`;
+          <div class="fp-rotate-handle" data-fprotatehandle="${s.id}"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></div>
+          <div class="fp-delete-handle" data-fpdelete="${s.id}"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>`;
       }
     }
 
@@ -4821,12 +4977,12 @@ document.getElementById('fpBgUpload').addEventListener('change', (e) => {
   fpHandleBgUpload(e.target.files[0], 1);
   const status = document.getElementById('fpGroundStatus');
   const label = document.querySelector('label[for=""] .fp-double-upload-btn');
-  if (status) { status.textContent = '✓ 已上傳'; status.className = 'fp-upload-status done'; }
+  if (status) { status.textContent = 'Uploaded'; status.className = 'fp-upload-status done'; }
 });
 document.getElementById('fpBgUpload2').addEventListener('change', (e) => {
   fpHandleBgUpload(e.target.files[0], 2);
   const status = document.getElementById('fpUpperStatus');
-  if (status) { status.textContent = '✓ 已上傳'; status.className = 'fp-upload-status done'; }
+  if (status) { status.textContent = 'Uploaded'; status.className = 'fp-upload-status done'; }
 });
 
 // Re-render on orientation change so layout switches between stacked/side-by-side
@@ -4970,12 +5126,12 @@ document.getElementById('fpClearBtn').addEventListener('click', () => {
 });
 document.getElementById('fpCollapseBtn').addEventListener('click', () => {
   const isCollapsed = shellEl.classList.toggle('fp-collapsed');
-  document.getElementById('fpCollapseBtn').textContent = isCollapsed ? '展開 ›' : '收合 ‹';
+  document.getElementById('fpCollapseBtn').textContent = isCollapsed ? 'Expand' : 'Collapse';
 });
 
 document.getElementById('fpFullscreenBtn').addEventListener('click', () => {
   const isFullscreen = shellEl.classList.toggle('fp-fullscreen');
-  document.getElementById('fpFullscreenBtn').textContent = isFullscreen ? '⊠' : '⛶';
+  document.getElementById('fpFullscreenBtn').innerHTML = isFullscreen ? '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>' : '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>';
   document.getElementById('fpFullscreenBtn').title = isFullscreen ? '退出全螢幕 Exit fullscreen' : '全螢幕 Fullscreen';
 });
 
@@ -5449,7 +5605,7 @@ async function fpExportImage() {
   ctx.fillStyle = BRAND.primary; ctx.font = 'bold 14px Arial';
   ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
   const hdr = [state.answers['customer_name']||'', state.answers['address']||''].filter(Boolean).join('  |  ');
-  ctx.fillText('📐 Symbol Key' + (hdr ? '  |  ' + hdr : ''), PAD, panelY + PAD + 10);
+  ctx.fillText('Symbol Key' + (hdr ? '  |  ' + hdr : ''), PAD, panelY + PAD + 10);
   if (BRAND.logo || BRAND.name) {                       // company logo / name, top-right of the key
     let rx = W - PAD;
     if (BRAND.name) {
