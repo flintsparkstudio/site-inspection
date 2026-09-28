@@ -2508,7 +2508,7 @@
 <!-- SVG icon defs for floor plan stickers -->
 <svg width="0" height="0" style="position:absolute">
   <defs>
-    <g id="icon-indoor"><rect x="4" y="4" width="52" height="52" rx="11" fill="#2563eb"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><rect x="11" y="16" width="38" height="14" rx="3"/><path d="M15 25h30"/><path d="M19 37q3 3 6 0M27 41q3 3 6 0M35 37q3 3 6 0"/></g></g>
+    <g id="icon-indoor"><rect x="2" y="15" width="56" height="30" rx="7" fill="#2563eb"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"><path d="M10 34h40M10 39h26"/></g><circle cx="47" cy="23.5" r="2.2" fill="#fff"/></g>
     <g id="icon-outdoor"><rect x="4" y="4" width="52" height="52" rx="11" fill="#1e293b"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><rect x="11" y="14" width="38" height="32" rx="2.5"/><circle cx="26" cy="30" r="9"/><path d="M26 22.5v15M18.5 30h15"/><path d="M40 21v18M44 21v18"/></g></g>
     <g id="icon-room"><rect x="4" y="4" width="52" height="52" rx="11" fill="#15803d"/><text x="30" y="39" font-size="26" font-weight="700" fill="#fff" text-anchor="middle" font-family="Inter, Arial, sans-serif">#</text></g>
     <!-- 磚牆 Brick Wall - 2 rows -->
@@ -5429,7 +5429,7 @@ function fpDrawStickerToExportCanvas(ctx, s) {
       return;
     }
     const svgBodies = {
-      indoor: `<rect x="4" y="4" width="52" height="52" rx="11" fill="#2563eb"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><rect x="11" y="16" width="38" height="14" rx="3"/><path d="M15 25h30"/><path d="M19 37q3 3 6 0M27 41q3 3 6 0M35 37q3 3 6 0"/></g>`,
+      indoor: `<rect x="2" y="15" width="56" height="30" rx="7" fill="#2563eb"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"><path d="M10 34h40M10 39h26"/></g><circle cx="47" cy="23.5" r="2.2" fill="#fff"/>`,
       outdoor: `<rect x="4" y="4" width="52" height="52" rx="11" fill="#1e293b"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><rect x="11" y="14" width="38" height="32" rx="2.5"/><circle cx="26" cy="30" r="9"/><path d="M26 22.5v15M18.5 30h15"/><path d="M40 21v18M44 21v18"/></g>`,
       brick: `<rect x="4" y="4" width="52" height="52" rx="11" fill="#9a3412"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><rect x="14" y="17" width="32" height="26" rx="1.5"/><path d="M14 25.7h32M14 34.3h32M30 17v8.7M22 25.7v8.6M38 25.7v8.6M30 34.3V43"/></g>`,
       flashing: `<rect x="4" y="4" width="52" height="52" rx="11" fill="#b91c1c"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M6.5 42 30 33.5 53.5 42 30 50.5Z"/><ellipse cx="30" cy="41" rx="13" ry="4.6"/><ellipse cx="30" cy="36.6" rx="9" ry="3.2"/><path d="M25 35V13.5M35 35V13.5"/><ellipse cx="30" cy="13.5" rx="5" ry="1.9"/></g>`,
@@ -5551,7 +5551,7 @@ async function fpExportImage() {
   }
 
   const svgBodies = {
-    indoor: `<rect x="4" y="4" width="52" height="52" rx="11" fill="#2563eb"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><rect x="11" y="16" width="38" height="14" rx="3"/><path d="M15 25h30"/><path d="M19 37q3 3 6 0M27 41q3 3 6 0M35 37q3 3 6 0"/></g>`,
+    indoor: `<rect x="2" y="15" width="56" height="30" rx="7" fill="#2563eb"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"><path d="M10 34h40M10 39h26"/></g><circle cx="47" cy="23.5" r="2.2" fill="#fff"/>`,
     outdoor: `<rect x="4" y="4" width="52" height="52" rx="11" fill="#1e293b"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><rect x="11" y="14" width="38" height="32" rx="2.5"/><circle cx="26" cy="30" r="9"/><path d="M26 22.5v15M18.5 30h15"/><path d="M40 21v18M44 21v18"/></g>`,
     room: `<rect x="4" y="4" width="52" height="52" rx="11" fill="#15803d"/><text x="30" y="39" font-size="26" font-weight="700" fill="#fff" text-anchor="middle" font-family="Inter, Arial, sans-serif">1</text>`,
     switchboard: `<rect x="4" y="4" width="52" height="52" rx="11" fill="#ca8a04"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><rect x="15" y="12" width="30" height="36" rx="2.5"/><path d="M32 18l-7 12h10l-6 12"/></g>`,
