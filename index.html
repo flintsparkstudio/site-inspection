@@ -2262,6 +2262,15 @@
   .qr-btns button { flex: 1; padding: 11px; border-radius: 6px; font-weight: 600; cursor: pointer; border: 1px solid var(--green); background: #fff; color: var(--green); }
   .qr-btns button:first-child { background: var(--green); color: #fff; }
   .qt-rebuild { border: none; background: none; color: var(--muted); font-size: 12px; cursor: pointer; padding: 6px; }
+
+  /* ---- Resume unfinished inspection ---- */
+  .resume-bar { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+    background: #fff7e6; border-bottom: 1px solid #f3d19c; }
+  .rb-text { flex: 1; display: flex; flex-direction: column; font-size: 13px; color: #7c4a03; min-width: 0; }
+  .rb-text span { font-size: 12px; opacity: .85; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rb-btns { display: flex; gap: 8px; }
+  .rb-btns button { padding: 9px 14px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; border: 1px solid #d97706; background: #fff; color: #b45309; }
+  .rb-btns button#rbResume { background: #d97706; color: #fff; }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -4834,6 +4843,7 @@ function attachResultEvents() {
   const cq = document.getElementById('createQuoteBtn');
   if (cq) cq.addEventListener('click', () => { state.quote = null; state.view = 'quote'; render(); });
   document.getElementById('restartBtn').addEventListener('click', () => {
+    if (window.autosaveClear) autosaveClear();
     state = { view: "hub", currentSection: null, answers: {}, follow: {}, counts: {}, dropdowns: {}, hpCustom: {}, photos: {}, wechatSummary: null, noteLists: {}, noteDrafts: {}, summaryLang: 'en', manualFees: [], manualFeeDraft: '' };
     render();
   });
@@ -6174,6 +6184,148 @@ window.addEventListener('load', () => {
 document.getElementById('calCancelBtn').addEventListener('click', () => {
   document.getElementById('calModalOverlay').classList.remove('open');
 });
+
+/* =======================================================================
+   AUTOSAVE — keeps the in-progress inspection on this iPad (IndexedDB),
+   so a Safari reload or switching apps never loses work.
+   Nothing leaves the device.
+========================================================================= */
+(function () {
+  const DB = 'si-autosave', STORE = 'kv', KEY = 'session';
+  let db = null, timer = null, paused = false, restoring = false;
+
+  function openDb() {
+    return new Promise((res, rej) => {
+      if (!('indexedDB' in window)) return rej(new Error('no idb'));
+      const r = indexedDB.open(DB, 1);
+      r.onupgradeneeded = () => r.result.createObjectStore(STORE);
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+  }
+  const tx = (mode, fn) => new Promise((res, rej) => {
+    const t = db.transaction(STORE, mode), s = t.objectStore(STORE), q = fn(s);
+    t.oncomplete = () => res(q && q.result); t.onerror = () => rej(t.error);
+  });
+
+  function hasContent(snap) {
+    const s = snap.state || {}, f = snap.fp || {};
+    return !!(Object.keys(s.answers || {}).length || (s.manualFees || []).length ||
+      Object.values(s.noteLists || {}).some(a => a.length) || Object.values(s.photos || {}).some(a => a && a.length) ||
+      (f.stickers || []).length || f.bg1 || f.bg2 || f.hasDrawing ||
+      (snap.qm && (Object.values(snap.qm.fields).some(v => v && v.trim()) || Object.keys(snap.qm.sel).length)));
+  }
+  // Quick Mode form that hasn't been submitted yet
+  function quickDraft() {
+    const p = document.getElementById('quickPanel');
+    if (!p || p.style.display === 'none') return null;
+    const d = { fields: {}, checks: {}, steps: {}, sel: {} };
+    p.querySelectorAll('input[id]:not([type=checkbox]), textarea[id]').forEach(el => d.fields[el.id] = el.value);
+    p.querySelectorAll('input[type=checkbox][id]').forEach(el => d.checks[el.id] = el.checked);
+    p.querySelectorAll('.qm-step-val[id]').forEach(el => d.steps[el.id] = el.textContent);
+    ['qmcount', 'qmtype', 'qmcombo'].forEach(k => { const s = p.querySelector(`[data-${k}].selected`); if (s) d.sel[k] = s.getAttribute('data-' + k); });
+    return d;
+  }
+  function applyQuickDraft(d) {
+    const btn = document.getElementById('quickModeBtn'); if (!btn) return;
+    btn.click();
+    const p = document.getElementById('quickPanel');
+    ['qmcount', 'qmtype', 'qmcombo'].forEach(k => { if (d.sel[k]) { const b = p.querySelector(`[data-${k}="${d.sel[k]}"]`); if (b) b.click(); } });
+    Object.entries(d.fields).forEach(([id, v]) => { const el = document.getElementById(id); if (el) el.value = v; });
+    Object.entries(d.checks).forEach(([id, v]) => { const el = document.getElementById(id); if (el) el.checked = v; });
+    Object.entries(d.steps).forEach(([id, v]) => { const el = document.getElementById(id); if (el) el.textContent = v; });
+  }
+  function snapshot() {
+    return {
+      qm: quickDraft(),
+      v: 1, savedAt: Date.now(),
+      state: JSON.parse(JSON.stringify(state)),
+      schedule: (typeof todaySchedule !== 'undefined') ? todaySchedule.filter(x => !x.fromCalendar) : [],
+      fp: {
+        bg1: fpBgImageSrc, bg2: fpBgImageSrc2, w: fpCanvasWidth, h: fpCanvasHeight,
+        stickers: fpStickers, nextId: fpNextId, nextRoom: fpNextRoomNum, opacity: fpBgOpacity,
+        hasDrawing: fpStrokeHistory.length > 0,
+        drawing: fpStrokeHistory.length > 0 ? fpDrawCanvas.toDataURL('image/png') : null,
+      },
+    };
+  }
+  async function saveNow() {
+    clearTimeout(timer); timer = null;
+    if (!db || paused || restoring) return;
+    try {
+      const snap = snapshot();
+      if (hasContent(snap)) await tx('readwrite', s => s.put(snap, KEY));
+      else await tx('readwrite', s => s.delete(KEY));
+    } catch (e) { /* storage full or unavailable — keep working normally */ }
+  }
+  function markDirty() { if (!db || paused || restoring) return; clearTimeout(timer); timer = setTimeout(saveNow, 800); }
+  window.autosaveClear = async () => { if (db) { try { await tx('readwrite', s => s.delete(KEY)); } catch (e) {} } };
+
+  // hook every change: app renders, canvas renders, typing, drawing
+  const _render = render;
+  render = function () { const r = _render.apply(this, arguments); markDirty(); return r; };
+  const _fpRender = fpRenderCanvas;
+  fpRenderCanvas = function () { const r = _fpRender.apply(this, arguments); markDirty(); return r; };
+  document.addEventListener('input', markDirty, true);
+  document.addEventListener('change', markDirty, true);
+  document.addEventListener('pointerup', markDirty, true);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveNow(); });
+  window.addEventListener('pagehide', saveNow);
+
+  async function restore(snap) {
+    restoring = true;
+    try {
+      state = snap.state;
+      if (state.quote && state.quote.date) state.quote.date = new Date(state.quote.date);
+      if (snap.schedule && typeof todaySchedule !== 'undefined') {
+        const cal = todaySchedule.filter(x => x.fromCalendar);
+        todaySchedule.length = 0; cal.concat(snap.schedule).forEach(x => todaySchedule.push(x));
+      }
+      const f = snap.fp || {};
+      fpBgImageSrc = f.bg1 || null; fpBgImageSrc2 = f.bg2 || null;
+      fpStickers.length = 0; (f.stickers || []).forEach(s => fpStickers.push(s));
+      fpNextId = f.nextId || fpStickers.reduce((m, s) => Math.max(m, s.id + 1), 1);
+      fpNextRoomNum = f.nextRoom || 1;
+      fpDrawCtx.clearRect(0, 0, fpDrawCanvas.width, fpDrawCanvas.height);
+      fpResizeCanvasTo(f.w || 900, f.h || 650);
+      fpStrokeHistory = [];
+      if (f.drawing) await new Promise(res => { const img = new Image();
+        img.onload = () => { fpDrawCtx.drawImage(img, 0, 0, fpDrawCanvas.width, fpDrawCanvas.height);
+          fpStrokeHistory.push(fpDrawCtx.getImageData(0, 0, fpDrawCanvas.width, fpDrawCanvas.height)); res(); };
+        img.onerror = res; img.src = f.drawing; });
+      fpBgOpacity = f.opacity || 1;
+      const op = document.getElementById('fpBgOpacity'); if (op) op.value = Math.round(fpBgOpacity * 100);
+      document.getElementById('fpBgLayer').style.opacity = fpBgOpacity;
+      _fpRender();
+      if (typeof fpZoomToFit === 'function' && (fpBgImageSrc || fpBgImageSrc2)) fpZoomToFit();
+      _render();
+      if (snap.qm) applyQuickDraft(snap.qm);
+    } finally { restoring = false; }
+  }
+
+  function showResumeBar(snap) {
+    const t = new Date(snap.savedAt);
+    const when = t.toLocaleString('en-AU', { weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
+    const qf = (snap.qm && snap.qm.fields) || {};
+    const who = (snap.state.answers && (snap.state.answers.customer_name || snap.state.answers.address)) || qf.qmCustomerName || qf.qmAddress || 'Unnamed site';
+    const bar = document.createElement('div');
+    bar.id = 'resumeBar'; bar.className = 'resume-bar';
+    bar.innerHTML = `<div class="rb-text"><b>Unfinished inspection</b><span data-raw>${escapeHtml(who)} · saved ${when}</span></div>
+      <div class="rb-btns"><button id="rbResume">Resume</button><button id="rbNew">Start new</button></div>`;
+    const qa = document.getElementById('qaPane');
+    qa.insertBefore(bar, qa.firstChild);
+    paused = true;                                   // don't overwrite the saved copy until you choose
+    document.getElementById('rbResume').onclick = async () => { bar.remove(); await restore(snap); paused = false; saveNow(); };
+    document.getElementById('rbNew').onclick = async () => { bar.remove(); await window.autosaveClear(); paused = false; markDirty(); };
+  }
+
+  openDb().then(async d => {
+    db = d;
+    const snap = await tx('readonly', s => s.get(KEY)).catch(() => null);
+    if (snap && hasContent(snap)) showResumeBar(snap);
+  }).catch(() => { /* private mode or blocked: app still works, just without autosave */ });
+})();
+
 </script>
 </body>
 </html>
