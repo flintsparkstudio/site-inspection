@@ -3543,6 +3543,14 @@ const FEE_PRICES = [                    // unit price ex GST (sample) — first 
   { match: /pipe fee/i,                 price: 250 },
   { match: /pump/i,                     price: 250 },
 ];
+const FEE_REASONS = {                  // EXAMPLE wording — replace with each company's own reasons
+  ladder:   'Work above standard ceiling or roof height needs taller ladders or access equipment, and a second installer on site for safety.',
+  brick:    'Solid double-brick or concrete walls need heavy-duty core drilling and extra time to run pipes and cables through cleanly.',
+  flashing: 'A weatherproof rubber flashing seals the roof where the pipes pass through, so rain cannot get in around the penetration.',
+  remove:   'The existing gas heater is safely disconnected, the gas line is capped off by a licensed gas fitter, and the old unit is taken away.',
+  replace:  'The existing indoor unit is removed and disposed of, and the wall is patched and prepared before the new unit is installed.',
+  pump:     'Where condensation water cannot drain away by gravity, a small pump lifts it to a suitable drain point.',
+};
 const QUOTE_TERMS = 'Quote valid for 30 days. Price includes supply and standard installation. Final price may change if site conditions differ from this inspection. A 30% deposit confirms the booking.';
 
 function money(n) { const v = Math.round((+n || 0) * 100) / 100; return (v < 0 ? '-$' : '$') + Math.abs(v).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
@@ -5835,9 +5843,23 @@ async function fpExportImage() {
   const H = fpCanvasHeight;
   const COL_W = Math.floor(W / COLS);
 
+  // "Why these extra charges apply" — only for fee stickers actually on this plan
+  const FEE_TYPES = ['ladder', 'brick', 'flashing', 'remove', 'replace', 'pump'];
+  const onPlan = new Set(fpStickers.map(s => s.type));
+  const reasonItems = LEGEND.filter(it => FEE_TYPES.includes(it.type) && onPlan.has(it.type) && FEE_REASONS[it.type]);
+  const mctx = document.createElement('canvas').getContext('2d');
+  const R_ICON = 30, R_TEXT_X = PAD + R_ICON + 12, R_TEXT_W = W - R_TEXT_X - PAD;
+  const wrap = (text, font, maxW) => {
+    mctx.font = font; const words = text.split(' '), lines = []; let line = '';
+    words.forEach(w => { const t = line ? line + ' ' + w : w; if (mctx.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; });
+    if (line) lines.push(line); return lines;
+  };
+  reasonItems.forEach(it => { it.lines = wrap(FEE_REASONS[it.type], '12px Arial', R_TEXT_W); it.h = Math.max(R_ICON, 18 + it.lines.length * 16) + 12; });
+  const reasonsH = reasonItems.length ? PAD + 26 + reasonItems.reduce((s, it) => s + it.h, 0) + PAD : 0;
+
   const exportCanvas = document.createElement('canvas');
   exportCanvas.width = W;
-  exportCanvas.height = H + legendH;
+  exportCanvas.height = H + legendH + reasonsH;
   const ctx = exportCanvas.getContext('2d');
 
   // 1. background(s)
@@ -5935,6 +5957,29 @@ async function fpExportImage() {
     img.src = 'data:image/svg+xml;base64,' + btoa(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60">${svgBodies[item.type]||''}</svg>`);
   })));
   ctx.fillStyle = '#d0d8e8'; ctx.fillRect(0, H+legendH-1, W, 1);
+
+  if (reasonItems.length) {
+    let ry = H + legendH;
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, ry, W, reasonsH);
+    ry += PAD;
+    ctx.fillStyle = BRAND.primary; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText('Why these extra charges apply', PAD, ry + 8);
+    ry += 26;
+    for (const it of reasonItems) {
+      await new Promise(res => {
+        const img = new Image();
+        img.onload = () => { ctx.drawImage(img, PAD, ry, R_ICON, R_ICON); res(); };
+        img.onerror = res;
+        img.src = 'data:image/svg+xml;base64,' + btoa(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60">${svgBodies[it.type]||''}</svg>`);
+      });
+      ctx.textBaseline = 'top'; ctx.fillStyle = '#0f1f3d'; ctx.font = 'bold 13px Arial';
+      ctx.fillText(it.label, R_TEXT_X, ry + 1);
+      ctx.fillStyle = '#4b5563'; ctx.font = '12px Arial';
+      it.lines.forEach((ln, k) => ctx.fillText(ln, R_TEXT_X, ry + 19 + k * 16));
+      ry += it.h;
+    }
+    ctx.fillStyle = '#d0d8e8'; ctx.fillRect(0, H + legendH + reasonsH - 1, W, 1);
+  }
   return exportCanvas;
 }
 
