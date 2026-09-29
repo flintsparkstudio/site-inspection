@@ -2500,6 +2500,10 @@
             <svg viewBox="0 0 60 60"><use href="#icon-indoor"/></svg>
             內機 Indoor
           </div>
+          <div class="fp-tray-btn" id="fpAddDucted">
+            <svg viewBox="0 0 60 60"><use href="#icon-ducted"/></svg>
+            Ducted Vent
+          </div>
           <div class="fp-tray-btn" id="fpAddOutdoor">
             <svg viewBox="0 0 60 60"><use href="#icon-outdoor"/></svg>
             外機 Outdoor
@@ -2555,6 +2559,7 @@
 <!-- SVG icon defs for floor plan stickers -->
 <svg width="0" height="0" style="position:absolute">
   <defs>
+    <g id="icon-ducted"><rect x="4" y="4" width="52" height="52" rx="11" fill="#e8dcc0"/><g stroke="#6b5537" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><rect x="13" y="13" width="34" height="34" rx="2.5"/><rect x="23" y="23" width="14" height="14" rx="1.5"/><path d="M13 13l10 10M47 13 37 23M13 47l10-10M47 47 37 37"/><path d="M18 30h5M37 30h5M30 18v5M30 37v5"/></g></g>
     <g id="icon-indoor"><rect x="2" y="15" width="56" height="30" rx="7" fill="#2563eb"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"><path d="M10 34h40M10 39h26"/></g><circle cx="47" cy="23.5" r="2.2" fill="#fff"/></g>
     <g id="icon-outdoor"><rect x="4" y="4" width="52" height="52" rx="11" fill="#1e293b"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><rect x="11" y="14" width="38" height="32" rx="2.5"/><circle cx="26" cy="30" r="9"/><path d="M26 22.5v15M18.5 30h15"/><path d="M40 21v18M44 21v18"/></g></g>
     <g id="icon-room"><rect x="4" y="4" width="52" height="52" rx="11" fill="#15803d"/><text x="30" y="39" font-size="26" font-weight="700" fill="#fff" text-anchor="middle" font-family="Inter, Arial, sans-serif">#</text></g>
@@ -5321,6 +5326,7 @@ function fpStartPlacing(type) {
     : type === 'pump' ? 'fpAddPump'
     : type === 'switchboard' ? 'fpAddSwitchboard'
     : type === 'ladder' ? 'fpAddLadder'
+    : type === 'ducted' ? 'fpAddDucted'
     : 'fpAddRoom';
   const activeBtn = document.getElementById(activeId);
   if (activeBtn) activeBtn.classList.add('fp-placing');
@@ -5331,7 +5337,7 @@ function fpStartPlacing(type) {
 
 function fpCancelPlacing() {
   fpPendingSticker = null;
-  ['fpAddIndoor', 'fpAddOutdoor', 'fpAddRoom', 'fpAddBrick', 'fpAddFlashing', 'fpAddRemove', 'fpAddReplace', 'fpAddPump', 'fpAddSwitchboard', 'fpAddLadder'].forEach(id => {
+  ['fpAddIndoor', 'fpAddOutdoor', 'fpAddRoom', 'fpAddBrick', 'fpAddFlashing', 'fpAddRemove', 'fpAddReplace', 'fpAddPump', 'fpAddSwitchboard', 'fpAddLadder', 'fpAddDucted'].forEach(id => {
     const btn = document.getElementById(id);
     if (btn) btn.classList.remove('fp-placing');
   });
@@ -5381,6 +5387,10 @@ document.getElementById('fpAddPump').addEventListener('click', () => {
 document.getElementById('fpAddSwitchboard').addEventListener('click', () => {
   if (fpPendingSticker === 'switchboard') { fpCancelPlacing(); return; }
   fpStartPlacing('switchboard');
+});
+document.getElementById('fpAddDucted').addEventListener('click', () => {
+  if (fpPendingSticker === 'ducted') { fpCancelPlacing(); return; }
+  fpStartPlacing('ducted');
 });
 document.getElementById('fpAddLadder').addEventListener('click', () => {
   if (fpPendingSticker === 'ladder') { fpCancelPlacing(); return; }
@@ -5806,6 +5816,7 @@ function fpDrawStickerToExportCanvas(ctx, s) {
       return;
     }
     const svgBodies = {
+      ducted: `<rect x="4" y="4" width="52" height="52" rx="11" fill="#e8dcc0"/><g stroke="#6b5537" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><rect x="13" y="13" width="34" height="34" rx="2.5"/><rect x="23" y="23" width="14" height="14" rx="1.5"/><path d="M13 13l10 10M47 13 37 23M13 47l10-10M47 47 37 37"/><path d="M18 30h5M37 30h5M30 18v5M30 37v5"/></g>`,
       indoor: `<rect x="2" y="15" width="56" height="30" rx="7" fill="#2563eb"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"><path d="M10 34h40M10 39h26"/></g><circle cx="47" cy="23.5" r="2.2" fill="#fff"/>`,
       outdoor: `<rect x="4" y="4" width="52" height="52" rx="11" fill="#1e293b"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><rect x="11" y="14" width="38" height="32" rx="2.5"/><circle cx="26" cy="30" r="9"/><path d="M26 22.5v15M18.5 30h15"/><path d="M40 21v18M44 21v18"/></g>`,
       brick: `<rect x="4" y="4" width="52" height="52" rx="11" fill="#9a3412"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><rect x="14" y="17" width="32" height="26" rx="1.5"/><path d="M14 25.7h32M14 34.3h32M30 17v8.7M22 25.7v8.6M38 25.7v8.6M30 34.3V43"/></g>`,
@@ -5835,6 +5846,7 @@ function fpDrawStickerToExportCanvas(ctx, s) {
 async function fpExportImage() {
   const LEGEND = [
     { type: 'indoor',      label: 'Indoor Unit' },
+    { type: 'ducted',      label: 'Ducted Vent' },
     { type: 'outdoor',     label: 'Outdoor Unit' },
     { type: 'room',        label: 'Room Number' },
     { type: 'switchboard', label: 'Switchboard' },
@@ -5942,6 +5954,7 @@ async function fpExportImage() {
   }
 
   const svgBodies = {
+    ducted: `<rect x="4" y="4" width="52" height="52" rx="11" fill="#e8dcc0"/><g stroke="#6b5537" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><rect x="13" y="13" width="34" height="34" rx="2.5"/><rect x="23" y="23" width="14" height="14" rx="1.5"/><path d="M13 13l10 10M47 13 37 23M13 47l10-10M47 47 37 37"/><path d="M18 30h5M37 30h5M30 18v5M30 37v5"/></g>`,
     indoor: `<rect x="2" y="15" width="56" height="30" rx="7" fill="#2563eb"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"><path d="M10 34h40M10 39h26"/></g><circle cx="47" cy="23.5" r="2.2" fill="#fff"/>`,
     outdoor: `<rect x="4" y="4" width="52" height="52" rx="11" fill="#1e293b"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><rect x="11" y="14" width="38" height="32" rx="2.5"/><circle cx="26" cy="30" r="9"/><path d="M26 22.5v15M18.5 30h15"/><path d="M40 21v18M44 21v18"/></g>`,
     room: `<rect x="4" y="4" width="52" height="52" rx="11" fill="#15803d"/><text x="30" y="39" font-size="26" font-weight="700" fill="#fff" text-anchor="middle" font-family="Inter, Arial, sans-serif">1</text>`,
