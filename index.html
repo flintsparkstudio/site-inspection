@@ -2383,6 +2383,22 @@
   .pp-res-head span[data-raw] { color: var(--muted); font-size: 13px; }
   .pp-res-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 6px; }
   .pp-res-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; cursor: zoom-in; }
+
+  /* ---- Find floor plan / aerial online ---- */
+  .hub-sched-find { padding: 7px 11px; border-radius: 7px; border: 1px solid var(--line); background: #fff; color: #374151 !important;
+    font-size: 12px; font-weight: 600; text-decoration: none; white-space: nowrap; }
+  .fp-find-online { margin-top: 14px; padding: 12px; border-radius: 8px; background: #f4f6fa; text-align: left; }
+  .ffo-title { font-size: 13px; font-weight: 700; color: #111827; }
+  .ffo-addr { font-size: 12px; color: var(--muted); margin: 3px 0 9px; }
+  .ffo-btns { display: flex; gap: 8px; }
+  .ffo-btn { flex: 1; text-align: center; padding: 10px; border-radius: 7px; background: var(--accent); color: #fff !important; font-weight: 600; font-size: 13px; text-decoration: none; }
+  .ffo-btn + .ffo-btn { background: #fff; color: var(--accent) !important; border: 1px solid var(--accent); }
+  .ffo-hint { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+  @media (max-width: 700px) {
+    .hub-schedule-item { flex-direction: column !important; align-items: stretch !important; gap: 8px; }
+    .hub-schedule-actions { justify-content: flex-start !important; }
+  }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -2540,6 +2556,7 @@
             <div style="font-size:12px;opacity:0.7;margin-top:3px;">Ground + first floor</div>
           </button>
         </div>
+        <div class="fp-find-online" id="fpFindOnline"></div>
         <button class="fp-floor-modal-cancel" id="fpFloorModalCancel">取消 Cancel</button>
       </div>
     </div>
@@ -3795,6 +3812,12 @@ function ppResultsHtml() {
     <div class="pp-res-pin"><div class="pp-res-head"><span class="pp-badge">${s.label}</span><b>Photo ${s.label}</b>${s.note ? `<span data-raw>${escapeHtml(s.note)}</span>` : ''}</div>
       <div class="pp-res-grid">${s.photos.map(p => `<img src="${p}" onclick="ppViewPhoto(this.src)">`).join('')}</div></div>`).join('')}</div>`;
 }
+/* Find a floor plan / aerial photo online for an address */
+function findPlanLinks(addr, cls) {
+  const q = encodeURIComponent(addr);
+  return `<a class="${cls}" href="https://www.google.com/search?tbm=isch&q=${encodeURIComponent(addr + ' floor plan')}" target="_blank" rel="noopener">Floor Plan</a>`
+       + `<a class="${cls}" href="https://www.google.com/maps/search/?api=1&query=${q}" target="_blank" rel="noopener">Aerial</a>`;
+}
 function planHasContent() {
   return !!(fpBgImageSrc || fpBgImageSrc2 || fpStickers.length);
 }
@@ -4083,6 +4106,7 @@ function renderScheduleItems() {
       </div>
       <div class="hub-schedule-actions">
         ${item.address ? `<a class="hub-sched-nav" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(item.address)}&travelmode=driving" target="_blank" rel="noopener">導航 Navigate</a>` : ''}
+        ${item.address ? findPlanLinks(item.address, 'hub-sched-find') : ''}
         <button class="hub-sched-select" data-schedidx="${i}">選用 Use</button>
         <button class="hub-sched-remove" data-schedidx="${i}">✕</button>
       </div>
@@ -5453,6 +5477,12 @@ function fpHandleBgUpload(file, slot) {
 
 // ---- Upload bottom modal flow ----
 document.getElementById('fpUploadBtn').addEventListener('click', () => {
+  const qm = document.getElementById('qmAddress');
+  const sel = (typeof todaySchedule !== 'undefined') ? todaySchedule.find(x => x.selected) : null;
+  const addr = (state.answers.address || (qm && qm.value) || (sel && sel.address) || '').trim();
+  document.getElementById('fpFindOnline').innerHTML = addr
+    ? `<div class="ffo-title">No floor plan yet? Find one online</div><div class="ffo-addr" data-raw>${escapeHtml(addr)}</div><div class="ffo-btns">${findPlanLinks(addr, 'ffo-btn')}</div><div class="ffo-hint">Save a screenshot, then come back and upload it.</div>`
+    : `<div class="ffo-hint">Add the site address to search for a floor plan or aerial photo online.</div>`;
   document.getElementById('fpFloorModalOverlay').classList.add('open');
 });
 document.getElementById('fpFloorModalCancel').addEventListener('click', () => {
