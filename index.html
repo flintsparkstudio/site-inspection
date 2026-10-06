@@ -6072,7 +6072,8 @@ function fpDrawStickerToExportCanvas(ctx, s) {
       ladder: `<rect x="4" y="4" width="52" height="52" rx="11" fill="#6d28d9"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M22 13v34M38 13v34M22 20.5h16M22 28.5h16M22 36.5h16"/></g>`,
       switchboard: `<rect x="4" y="4" width="52" height="52" rx="11" fill="#ca8a04"/><g stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><rect x="15" y="12" width="30" height="36" rx="2.5"/><path d="M32 18l-7 12h10l-6 12"/></g>`,
     };
-    const body = svgBodies[s.type] || svgBodies.indoor;
+    const body = svgBodies[s.type];
+    if (!body) { resolve(); return; }   // unknown type: skip instead of drawing an indoor unit
     const svgMarkup = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60">${body}</svg>`;
     const img = new Image();
     img.onload = () => {
