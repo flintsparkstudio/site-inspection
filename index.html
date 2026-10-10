@@ -2407,6 +2407,22 @@
   .qm-sys-sub { font-size: 10.5px; font-weight: 500; opacity: .75; }
   .qm-count-opts { flex-wrap: wrap; }
   .qm-count-opts .qm-opt { flex: 1 1 calc(33.33% - 8px); min-width: 70px; }
+  /* ---- Import schedule from Excel ---- */
+  .hub-xls-btn { margin-top: 8px; }
+  .xls-card { max-width: 620px; }
+  .xls-file { font-size: 12px; color: var(--muted); margin-top: -6px; }
+  .xls-maps { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+  .xls-map { display: flex; flex-direction: column; gap: 3px; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+  .xls-map select { font-size: 13px; padding: 7px 8px; border: 1px solid var(--line); border-radius: 6px; background: #fff; text-transform: none; letter-spacing: 0; color: #111827; }
+  .xls-scope { display: flex; gap: 8px; }
+  .xls-scope button { flex: 1; padding: 9px; border-radius: 7px; border: 1px solid var(--line); background: #fff; font-weight: 600; font-size: 13px; cursor: pointer; }
+  .xls-scope button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .xls-list { display: flex; flex-direction: column; gap: 6px; max-height: 40vh; overflow-y: auto; }
+  .xls-row { display: flex; gap: 10px; align-items: flex-start; padding: 9px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .xls-row input { margin-top: 3px; width: 18px; height: 18px; }
+  .xls-row-top { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .xls-time { font-size: 11px; font-weight: 700; color: var(--accent); }
+  .xls-row-addr { color: var(--muted); font-size: 12px; margin-top: 2px; }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -4385,6 +4401,10 @@ function renderHub() {
         <button class="hub-gcal-btn" id="gcalLoginBtn">
           <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.29-8.16 2.29-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
           匯入 Google 行事曆 Import Google Calendar
+        </button>
+        <button class="hub-gcal-btn hub-xls-btn" id="xlsImportBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+          從 Excel 匯入 Import from Excel or CSV
         </button>
         <div class="hub-gcal-user" id="gcalUserInfo" style="display:none">
           <span id="gcalUserName"></span>
@@ -6829,6 +6849,122 @@ document.getElementById('calCancelBtn').addEventListener('click', () => {
     }, 80);
   });
 })();
+
+/* =======================================================================
+   IMPORT SCHEDULE FROM EXCEL / CSV
+   Detects Address / Customer / Date / Time / Phone / Notes columns (English
+   or Chinese headers), lets you check the mapping, then adds the rows to
+   Today's Schedule. Nothing is uploaded anywhere — the file is read on the device.
+========================================================================= */
+const XLS_COLS = [
+  ['address', 'Address *', /address|addr|site|location|地址|地點/i],
+  ['suburb',  'Suburb',    /suburb|city|town|區域|城市/i],
+  ['postcode','Postcode',  /post\s*code|zip|郵遞|郵編/i],
+  ['name',    'Customer',  /customer|client|name|客戶|姓名|名稱/i],
+  ['date',    'Date',      /date|day|日期/i],
+  ['time',    'Time',      /time|start|時間/i],
+  ['phone',   'Phone',     /phone|mobile|tel|contact|電話|手機/i],
+];
+function loadXlsxLib() {
+  if (window.XLSX) return Promise.resolve();
+  return new Promise((res, rej) => { const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    s.onload = res; s.onerror = () => rej(new Error('xlsx load failed')); document.head.appendChild(s); });
+}
+let xlsInput = null;
+document.addEventListener('click', e => {
+  if (!e.target.closest('#xlsImportBtn')) return;
+  if (!xlsInput) {
+    xlsInput = document.createElement('input'); xlsInput.type = 'file'; xlsInput.style.display = 'none';
+    xlsInput.accept = '.xlsx,.xls,.csv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel';
+    document.body.appendChild(xlsInput);
+    xlsInput.addEventListener('change', async () => {
+      const f = xlsInput.files[0]; xlsInput.value = ''; if (!f) return;
+      try { await xlsRead(f); }
+      catch (err) { alert('Could not read this file. Please check it is an Excel (.xlsx) or CSV file, and that you are online the first time you import.'); }
+    });
+  }
+  xlsInput.click();
+});
+function xlsSameDay(a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
+function xlsToDate(v) {
+  if (v instanceof Date && !isNaN(v)) return v;
+  const s = String(v || '').trim(); let m;
+  if ((m = s.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/))) return new Date(+m[1], +m[2] - 1, +m[3]);
+  if ((m = s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{2,4})/))) { const y = +m[3] < 100 ? 2000 + +m[3] : +m[3]; return new Date(y, +m[2] - 1, +m[1]); }  // Australian d/m/y
+  return null;
+}
+function xlsTime(v) {
+  if (v instanceof Date && !isNaN(v)) { if (v.getHours() === 0 && v.getMinutes() === 0) return ''; return v.toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit' }); }
+  const s = String(v || '').trim(); return s.length > 12 ? s.slice(0, 12) : s;
+}
+async function xlsRead(file) {
+  await loadXlsxLib();
+  const wb = XLSX.read(await file.arrayBuffer(), { type: 'array', cellDates: true });
+  const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, raw: true, defval: '' })
+    .filter(r => r.some(c => String(c).trim() !== ''));
+  if (!rows.length) { alert('This file looks empty.'); return; }
+  // header row = the row (in the first 10) that matches the most column names
+  let hIdx = 0, best = -1;
+  rows.slice(0, 10).forEach((r, i) => { const score = r.filter(c => XLS_COLS.some(k => k[2].test(String(c)))).length; if (score > best) { best = score; hIdx = i; } });
+  const header = rows[hIdx].map(c => String(c).trim());
+  const map = {};
+  XLS_COLS.forEach(([key, , re]) => { const i = header.findIndex((h, j) => re.test(h) && !Object.values(map).includes(j)); if (i >= 0) map[key] = i; });
+  xlsShowPreview(file.name, header, rows.slice(hIdx + 1), map);
+}
+function xlsBuild(rows, map) {
+  const get = (r, k) => map[k] != null && map[k] !== '' ? r[map[k]] : '';
+  const today = new Date();
+  return rows.map(r => {
+    const d = map.date != null && map.date !== '' ? xlsToDate(get(r, 'date')) : null;
+    let addr = String(get(r, 'address') || '').trim();
+    const sub = String(get(r, 'suburb') || '').trim(), pc = String(get(r, 'postcode') || '').trim();
+    if (sub && !addr.toLowerCase().includes(sub.toLowerCase())) addr += (addr ? ', ' : '') + sub;
+    if (pc && !addr.includes(pc)) addr += ' ' + pc;
+    let time = xlsTime(get(r, 'time')); if (!time && d) time = xlsTime(get(r, 'date'));
+    const phone = String(get(r, 'phone') || '').trim();
+    return { name: String(get(r, 'name') || '').trim(), address: addr.trim(), time, phone, date: d, isToday: d ? xlsSameDay(d, today) : null };
+  }).filter(x => x.address || x.name);
+}
+function xlsShowPreview(fileName, header, rows, map) {
+  let el = document.getElementById('xlsSheet');
+  if (!el) { el = document.createElement('div'); el.id = 'xlsSheet'; el.className = 'pp-overlay'; document.body.appendChild(el); }
+  let scope = 'today';
+  const draw = () => {
+    const all = xlsBuild(rows, map);
+    const hasDate = map.date != null && map.date !== '';
+    const todayCount = all.filter(x => x.isToday).length;
+    if (!hasDate || !todayCount) scope = 'all';
+    const list = scope === 'today' ? all.filter(x => x.isToday) : all;
+    const sel = (key, label) => `<label class="xls-map"><span>${label}</span><select data-map="${key}"><option value="">—</option>${header.map((h, i) => `<option value="${i}" ${map[key] === i ? 'selected' : ''}>${escapeHtml(h || 'Column ' + (i + 1))}</option>`).join('')}</select></label>`;
+    el.innerHTML = `<div class="pp-card xls-card">
+      <div class="pp-head"><b>Import schedule</b><button class="pp-close" data-xlsclose style="background:#fff;color:var(--muted);border:1px solid var(--line)">Cancel</button></div>
+      <div class="xls-file" data-raw>${escapeHtml(fileName)}</div>
+      <div class="xls-maps">${XLS_COLS.map(([k, l]) => sel(k, l)).join('')}</div>
+      ${hasDate && todayCount ? `<div class="xls-scope"><button data-scope="today" class="${scope === 'today' ? 'on' : ''}">Today only (${todayCount})</button><button data-scope="all" class="${scope === 'all' ? 'on' : ''}">All rows (${all.length})</button></div>` : ''}
+      ${map.address == null || map.address === '' ? '<div class="combo-none">Choose which column has the address.</div>' : ''}
+      <div class="xls-list">${list.map((x, i) => `<label class="xls-row"><input type="checkbox" data-xi="${i}" checked><div><div class="xls-row-top">${x.time ? `<span class="xls-time">${escapeHtml(x.date && !x.isToday ? x.date.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' }) + ' ' + x.time : x.time)}</span>` : ''}<b data-raw>${escapeHtml(x.name || '(no name)')}</b></div><div class="xls-row-addr" data-raw>${escapeHtml(x.address || '(no address)')}</div></div></label>`).join('') || '<div class="pp-empty">No rows to import</div>'}</div>
+      <button class="quote-make-btn" data-xlsadd ${list.length ? '' : 'disabled'}>Add ${list.length} to schedule</button>
+    </div>`;
+    el.querySelectorAll('[data-map]').forEach(s => s.onchange = () => { map[s.dataset.map] = s.value === '' ? '' : +s.value; draw(); });
+    el.querySelectorAll('[data-scope]').forEach(b => b.onclick = () => { scope = b.dataset.scope; draw(); });
+    el.querySelector('[data-xlsclose]').onclick = () => el.remove();
+    el.querySelector('[data-xlsadd]').onclick = () => {
+      const picked = list.filter((x, i) => el.querySelector(`[data-xi="${i}"]`).checked);
+      let added = 0;
+      picked.forEach(x => {
+        const fullName = x.name + (x.phone ? ' · ' + x.phone : '');
+        if (todaySchedule.some(s => s.address === x.address && (s.name === fullName || s.name === x.name))) return;   // skip duplicates
+        const t = x.date && !x.isToday ? x.date.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' }) + (x.time ? ' ' + x.time : '') : x.time;
+        todaySchedule.push({ name: fullName, address: x.address, time: t, selected: false, fromExcel: true });
+        added++;
+      });
+      el.remove(); render();
+      if (added < picked.length) alert(`${added} added. ${picked.length - added} were already in the schedule.`);
+    };
+  };
+  draw();
+}
 </script>
 </body>
 </html>
