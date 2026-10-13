@@ -2509,7 +2509,7 @@
       <!-- Stepper fees (variable quantity) -->
       <div class="qm-fee-steppers">
         <div class="qm-fee-row">
-          <span class="qm-fee-label">高空費 Height fee</span>
+          <span class="qm-fee-label">高空費 High access fee</span>
           <div class="qm-stepper">
             <button class="qm-step-btn" data-target="qmQtyHeight" data-dir="-1">－</button>
             <span class="qm-step-val" id="qmQtyHeight">0</span>
@@ -2525,7 +2525,7 @@
           </div>
         </div>
         <div class="qm-fee-row">
-          <span class="qm-fee-label">雙磚費 Double brick fee</span>
+          <span class="qm-fee-label">雙磚費 Double brick wall</span>
           <div class="qm-stepper">
             <button class="qm-step-btn" data-target="qmQtyBrick" data-dir="-1">－</button>
             <span class="qm-step-val" id="qmQtyBrick">0</span>
@@ -2549,7 +2549,7 @@
           </div>
         </div>
         <div class="qm-fee-row">
-          <span class="qm-fee-label">水泵費 Pump fee</span>
+          <span class="qm-fee-label">水泵費 Condensate pump</span>
           <div class="qm-stepper">
             <button class="qm-step-btn" data-target="qmQtyPump" data-dir="-1">－</button>
             <span class="qm-step-val" id="qmQtyPump">0</span>
@@ -3373,11 +3373,32 @@ function collectStickerFees() {
   return fees;
 }
 
+// One name per fee, whichever part of the app it came from (questions, floor plan, Quick Mode)
+const FEE_CANON = [
+  [/high access|height fee/i,           '高空費',          'High access fee'],
+  [/double brick/i,                     '雙磚費',          'Double brick wall'],
+  [/roof pipe flashing/i,               '穿瓦費',          'Roof pipe flashing'],
+  [/gas heater/i,                       'Gas Heater拆除費', 'Gas heater removal'],
+  [/indoor unit removal|^removal fee/i, '內機拆除費',       'Indoor unit removal'],
+  [/pump/i,                             '水泵費',          'Condensate pump'],
+];
 function collectFeesWithOverrides() {
   const raw = collectRawFees();
   const canvas = collectStickerFees();
   const manual = (state.manualFees || []).map((text, i) => ({ id: `manual_${i}`, text, source: 'manual' }));
-  return [...raw, ...canvas, ...manual];
+  // The same fee can be entered twice (e.g. a Gas Heater sticker on the plan AND ticked in
+  // Quick Mode). Those describe the same work, so keep the larger quantity instead of adding.
+  const merged = [], byKey = {};
+  [...raw, ...canvas, ...manual].forEach(f => {
+    const en = splitBilingual(f.text, 'en');
+    const m = en.match(/×\s*(\d+)/); const qty = m ? parseInt(m[1], 10) : 1;
+    const canon = FEE_CANON.find(([re]) => re.test(en));
+    if (!canon) { merged.push(f); return; }                       // other fees: unchanged
+    const key = canon[2];
+    if (byKey[key]) { byKey[key].qty = Math.max(byKey[key].qty, qty); }
+    else { byKey[key] = { ...f, qty, canon }; merged.push(byKey[key]); }
+  });
+  return merged.map(f => f.canon ? { id: f.id, source: f.source, text: `${f.canon[1]} ×${f.qty} / ${f.canon[2]} ×${f.qty}` } : f);
 }
 
 function collectSalesNotes() {
@@ -3808,7 +3829,7 @@ const FEE_PRICES = [                    // unit price ex GST (sample) — first 
   { match: /stair/i,                    price: 150 },
   { match: /tin|plastic/i,              price: 180 },
   { match: /indoor transport/i,         price: 120 },
-  { match: /height fee/i,               price: 200 },
+  { match: /high access|height fee/i,  price: 200 },
   { match: /indoor unit removal|removal fee/i, price: 150 },
   { match: /double brick/i,             price: 180 },
   { match: /pipe fee/i,                 price: 250 },
@@ -4601,12 +4622,12 @@ function hideQuickPanel() {
 
     // Collect stepper fees (variable quantity)
     const stepFees = [
-      ['qmQtyHeight',   '高空費',   'Height fee'],
+      ['qmQtyHeight',   '高空費',   'High access fee'],
       ['qmQtyRemove',   '內機拆除費', 'Indoor unit removal fee'],
-      ['qmQtyBrick',    '雙磚費',   'Double brick fee'],
+      ['qmQtyBrick',    '雙磚費',   'Double brick wall'],
       ['qmQtyPipe',     '拉管費',   'Pipe fee'],
       ['qmQtyFlashing', 'Roof Pipe Flashing', 'Roof Pipe Flashing'],
-      ['qmQtyPump',     '水泵費', 'Pump fee'],
+      ['qmQtyPump',     '水泵費', 'Condensate pump'],
     ];
     stepFees.forEach(([id, zhLabel, enLabel]) => {
       const el = document.getElementById(id);
